@@ -1,7 +1,7 @@
 # Lele-Panel
 **项目简介：**
 
-一个类sun-panel的导航站，轻量级，支持docker部署
+一个类[sun-panel](https://github.com/hslr-s/sun-panel)的导航站，轻量级，支持docker部署
 
 **演示站点：**
 
