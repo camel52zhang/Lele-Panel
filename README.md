@@ -31,6 +31,10 @@ http://nav.lelez.site:8080/
 
 ![lele-panel-3](https://github.com/camel52zhang/pic__bed1/blob/main/2025/lele-panel-4-1.png?raw=true)
 
+> 其中`图标：`是基于三个方式来创建，一个是[iconfont](https://www.iconfont.cn/)，一个是[iconify](https://icon-sets.iconify.design/)，一个是图片的`url`，其中`iconfont`是我自己的项目，假如写上名字没有图标显示就是我的项目没收藏，可以尝试使用[favicon](https://favicon.im/)来解析的地址，操作方式如网站`google.com`,可以使用`https://favicon.im/google.com`填写到`图标：`栏，这样就会生成图标了
+
+
+
 **docker一键部署**
 
 ~~~
