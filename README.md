@@ -52,3 +52,4 @@ docker pull camel52zhang/lelepanel:latest
 docker run -d -p 8080:8000 --name lelepanel_app camel52zhang/lelepanel:latest
 ~~~
 
+> 默认用户名/密码：admin/password
