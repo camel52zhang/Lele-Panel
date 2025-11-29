@@ -1,13 +1,13 @@
 # Lele-Panel
 **项目简介：**
 
-一个类[sun-panel](https://github.com/hslr-s/sun-panel)的导航站，轻量级，支持docker部署
+一个类[sun-panel](https://github.com/hslr-s/sun-panel)的导航站，轻量级，支持docker一键部署及docker compose部署
 
 **演示站点：**
 
-http://nav.lelez.site:8080/
+https://dh.lelez.us.kg/
 
-
+> 域名托管在国外，打开会有点慢，实际非常轻量化
 
 **界面预览：**
 
@@ -53,3 +53,69 @@ docker run -d -p 8080:8000 --name lelepanel_app camel52zhang/lelepanel:latest
 ~~~
 
 > 默认用户名/密码：admin/password
+
+
+
+**Docker compose部署**
+
+创建docker-compose.yml 文件
+
+基础版
+
+~~~
+version: '3.8'
+
+services:
+  lelepanel_app:
+    image: camel52zhang/lelepanel:latest
+    container_name: lelepanel_app
+    ports:
+      - "8080:8000"
+    restart: unless-stopped
+~~~
+
+增强版本
+
+~~~
+version: '3.8'
+
+services:
+  lelepanel_app:
+    image: camel52zhang/lelepanel:latest
+    container_name: lelepanel_app
+    ports:
+      - "8080:8000"
+    restart: unless-stopped
+    volumes:
+      - lelepanel_data:/app/data  # 数据持久化
+    environment:
+      - TZ=Asia/Shanghai  # 设置时区
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  lelepanel_data:
+~~~
+
+> 使用方法：
+>
+> 1. 创建 `docker-compose.yml` 文件
+>
+> 2. 在终端中运行：
+>
+>    ~~~
+>    # 启动服务
+>    docker-compose up -d
+>    
+>    # 查看服务状态
+>    docker-compose ps
+>    
+>    # 查看日志
+>    docker-compose logs -f
+>    
+>    # 停止服务
+>    docker-compose down
+>    ~~~
