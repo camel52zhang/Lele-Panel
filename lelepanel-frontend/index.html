@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lele-Panel 导航页</title>
+	<link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+	<script src="//at.alicdn.com/t/c/font_4622335_aknseoup8g4.js"></script> 
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="container">
+        
+        <header>
+            <h1 class="title">Lele-Panel</h1>
+            <span class="pipe">|</span>
+            <div class="datetime">
+                <span id="time">00:00:00</span>
+                <span id="date"></span>
+				
+				<button class="admin-toggle" id="adminToggle" title="管理面板">⚙️</button>
+            </div>
+        </header>
+
+        <div class="search-bar" id="searchBarContainer">
+            <form>
+                <input type="text" id="searchInput" class="form-control" placeholder="请输入搜索关键词并按回车键…">
+            </form>
+            
+            <div class="search-tab">
+                <a href="javascript:;" data-url="https://www.google.com/search?q=" class="btn btn-link btn-sm btn-rounded search-link active" data-name="谷歌">
+                    <i class="fab fa-google" aria-hidden="true"></i>&nbsp;谷歌
+                </a>
+                <a href="javascript:;" data-url="https://www.bing.com/search?q=" class="btn btn-link btn-sm btn-rounded search-link" data-name="Bing">
+                    <i class="fas fa-search-plus" aria-hidden="true"></i>&nbsp;Bing
+                </a>
+                <a href="javascript:;" data-url="https://www.baidu.com/s?wd=" class="btn btn-link btn-sm btn-rounded search-link" data-name="百度">
+                    <i class="fab fa-bootstrap" aria-hidden="true"></i>&nbsp;百度
+                </a>
+                <a href="javascript:;" data-url="https://yandex.com/search/?text=" class="btn btn-link btn-sm btn-rounded search-link" data-name="Yandex">
+                    <i class="fab fa-yandex" aria-hidden="true"></i>&nbsp;Yandex
+                </a>
+                <a href="javascript:;" data-url="https://github.com/search?q=" class="btn btn-link btn-sm btn-rounded search-link" data-name="Github">
+                    <i class="fab fa-github" aria-hidden="true"></i>&nbsp;Github
+                </a>
+            </div>
+        </div>
+
+        <main id="linksContainer">
+        </main>
+    </div>
+
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">×</span>
+            <h2 id="modalTitle">管理面板</h2>
+            
+            <div id="loginForm" class="setting-section">
+                <h3 class="manager-toggle">🔑 管理员登录</h3>
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="用户名" value="admin">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="密码" value="password">
+                </div>
+                <button onclick="handleLogin()" class="primary-btn" style="width: 100%;">登录</button>
+                <p id="loginMessage" class="error-message"></p>
+            </div>
+            
+            <div id="linkManager" style="display: none;">
+                
+                <div class="setting-section account-manager">
+                    <h3 class="manager-toggle" onclick="toggleSection('accountSettings')">
+                        🔒 账号管理 (点击展开)
+                        <span id="accountToggleIcon">▼</span>
+                    </h3>
+                    
+                    <div id="accountSettings" style="display: none;">
+                        <div class="setting-subsection">
+                            <h4 class="section-title">账户安全设置</h4>
+                            
+                            <div class="form-group">
+                                <label for="oldPassword">旧密码:</label>
+                                <input type="password" id="oldPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">新密码:</label>
+                                <input type="password" id="newPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newUsername">新用户名 (可选):</label>
+                                <input type="text" id="newUsername" placeholder="留空则不修改">
+                            </div>
+                            
+                            <button onclick="handleUserUpdate()" class="primary-btn">保存新账户信息</button>
+                            <p id="updateMessage" style="color: #f7b731; margin-top: 10px;"></p>
+                            <button onclick="handleLogout()" class="primary-btn" style="background-color: #dc3545; margin-top: 10px;">注销</button> 
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="margin: 20px 0; border-color: rgba(255, 255, 255, 0.1);">
+                
+                <div class="setting-section backup-manager">
+                    <h3 class="manager-toggle" onclick="toggleSection('backupSettings')">
+                        💾 数据备份与恢复 (点击展开)
+                        <span id="backupToggleIcon">▼</span>
+                    </h3>
+                    
+                    <div id="backupSettings" style="display: none;"> 
+                        <div class="setting-subsection">
+                            <h4 class="section-title">备份数据</h4>
+                            <p style="font-size: 0.85em; opacity: 0.7;">将当前链接和分组配置下载为 JSON 文件。</p>
+                            <button onclick="backupData()" class="primary-btn" style="background-color: #f7b731;">
+                                下载备份文件
+                            </button>
+                        </div>
+
+                        <div class="setting-subsection" style="margin-top: 15px;">
+                            <h4 class="section-title">恢复数据</h4>
+                            <p style="font-size: 0.85em; opacity: 0.7;">上传备份的 JSON 文件以恢复配置（将覆盖现有数据）。</p>
+                            <input type="file" id="restoreFileInput" accept=".json" style="margin-bottom: 10px;">
+                            <button onclick="restoreData()" class="primary-btn" style="background-color: #007bff;">
+                                开始恢复
+                            </button>
+                            <p id="restoreMessage" class="error-message"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr style="margin: 20px 0; border-color: rgba(255, 255, 255, 0.1);">
+
+                <h3>导航分组管理 <small style="font-size: 0.8em; color: #888; font-weight: normal;">(可拖动排序)</small></h3>
+                <button onclick="showAddGroupForm()">+ 新增分组</button>
+                
+                <div id="currentGroups"> 
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <div id="addLinkForm" class="modal-mini" style="display: none;">
+        <div class="modal-content-mini">
+            <span class="close-button" onclick="hideAddLinkForm()">×</span>
+            <h4>新增/编辑链接</h4>
+            
+            <input type="hidden" id="linkId">
+            
+            <fieldset class="link-form-fieldset">
+                <legend>链接详情</legend>
+                
+                <div class="form-group">
+                    <label for="linkName">名称:</label>
+                    <input type="text" id="linkName" placeholder="如: ChatGPT">
+                </div>
+                <div class="form-group">
+                    <label for="linkUrl">URL:</label>
+                    <input type="text" id="linkUrl" placeholder="如: https://chat.openai.com">
+                </div>
+                <div class="form-group">
+                    <label for="linkIcon">图标:</label>
+                    <input type="text" id="linkIcon" placeholder="如: logos:openai 或 icon-my-custom">
+                </div>
+                <div class="form-group">
+                    <label for="linkGroup">分组:</label>
+                    <input type="text" id="linkGroup" placeholder="如: AI">
+                </div>
+                <div class="form-group">
+                    <label for="linkSortOrder">排序:</label>
+                    <input type="number" id="linkSortOrder" placeholder="数字越小越靠前" value="100">
+                </div>
+            </fieldset>
+
+            <div class="form-actions">
+                <button onclick="saveLink()" class="primary-btn" style="background-color: #007bff;">保存</button>
+                <button onclick="hideAddLinkForm()" class="primary-btn" style="background-color: #555;">取消</button>
+                <button id="deleteLinkBtn" style="display: none; margin-left: auto;" class="primary-btn delete-btn-small" onclick="deleteLink()" >删除</button>
+            </div>
+        </div>
+    </div>
+	
+    </div> 
+    <footer>
+        <a href="https://github.com/camel52zhang/Lele-Panel" target="_blank" class="footer-link">@lele-panel</a>
+    </footer>
+    
+    <button id="scrollToTopBtn" class="scroll-to-top-btn" title="回到顶部">
+        <iconify-icon icon="mdi:arrow-up" style="font-size: 24px;"></iconify-icon>
+    </button>
+	
+    <script src="/static/script.js"></script>
+</body>
+</html>
